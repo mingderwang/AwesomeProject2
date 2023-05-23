@@ -4,7 +4,7 @@
  *
  * @format
  */
-
+import { BleManager } from 'react-native-ble-plx';
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
@@ -25,9 +25,26 @@ import {
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
 
+import { LogBox } from 'react-native';
+LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
+LogBox.ignoreAllLogs(); //Ignore all log notifications
+
+const bleManager = new BleManager();
+
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
+
+const scanForDevices = () => {
+  bleManager.startDeviceScan(null, null, (error, device) => {
+    if (error) {
+      console.error('Error scanning for devices:', error);
+      return;
+    }
+
+    console.log('Found device:', device?.id, device?.name);
+  });
+};
 
 function Section({children, title}: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -57,6 +74,7 @@ function Section({children, title}: SectionProps): JSX.Element {
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
+  scanForDevices();
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,

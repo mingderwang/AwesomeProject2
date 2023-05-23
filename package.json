@@ -4,14 +4,15 @@
   "private": true,
   "scripts": {
     "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "ios": "react-native run-ios --verbose",
     "lint": "eslint .",
-    "start": "react-native start",
+    "start": "npx react-native start --reset-cache --max-workers 4 --verbose",
     "test": "jest"
   },
   "dependencies": {
     "react": "18.2.0",
-    "react-native": "0.71.8"
+    "react-native": "^0.71.8",
+    "react-native-ble-plx": "^2.0.3"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
