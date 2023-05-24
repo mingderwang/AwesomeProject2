@@ -1,136 +1,139 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useEffect, useState } from 'react';
+import { View, Text, Button , NativeModules} from 'react-native';
 import BleManager from 'react-native-ble-manager';
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { DeviceEventEmitter, NativeEventEmitter } from 'react-native';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
 
-import { LogBox } from 'react-native';
-LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
-LogBox.ignoreAllLogs(); //Ignore all log notifications
+  interface Device {
+    id: string;
+    name: string | null;
+    // Add other properties as per your requirements
+  } 
+  const peripherals = new Map();
+  const [isScanning, setIsScanning] = useState(false);
+  const [devices, setDevices] = useState<Array<Device>>([]);
+  const [connectedDevice, setConnectedDevice] = useState<Device | null>(null);
+  const BleManagerModule = NativeModules.BleManager;
+  const BleManagerEmitter = new NativeEventEmitter(BleManagerModule);
+  const scanDevices = () => {
+    BleManager.checkState().then((state) =>
+  console.log(`scanning, current BLE state = '${state}'.`)
+);
 
-BleManager.start({ showAlert: false })
-.then(() => {
-  console.log('Bluetooth module initialized');
-  // You can now use the static methods provided by BleManager
-  // For example, scan for devices, connect to a device, read/write characteristics, etc.
-})
-.catch((error) => {
-  console.log('Failed to initialize Bluetooth module', error);
-});
+    if (!isScanning) {
+    BleManager.scan([], 5, true)
+      .then(() => {
+        console.log('Scanning started');
+        setIsScanning(true);
+      })
+      .catch((error) => {
+        console.log('Failed to start scanning', error);
+      });
+    } else {
+      console.log('duplicate scanning')
+    }
+  };
 
+  const readCharacteristic = () => {
+    if (connectedDevice) {
+      const serviceUUID = 'YOUR_SERVICE_UUID';
+      const characteristicUUID = 'YOUR_CHARACTERISTIC_UUID';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+      BleManager.read(connectedDevice.id, serviceUUID, characteristicUUID)
+        .then((data) => {
+          console.log('Read characteristic', data);
+          // Handle the received data
+        })
+        .catch((error) => {
+          console.log('Failed to read characteristic', error);
+        });
+    }
+  };
+  
+  useEffect(() => {
+    BleManager.checkState().then((state) =>
+  console.log(`2 current BLE state = '${state}'.`)
+);
 
+    console.log('useEffect2 is in!');
+    const discoverPeripheralListener = DeviceEventEmitter.addListener(
+      'BleManagerDiscoverPeripheral',
+      (device: Device) => {
+        // Update the list of discovered devices
+        console.log('BLE found' + device.name + device.id);
+        setDevices((prevDevices) => [...prevDevices, device]);
+      }
+    );
 
+    return () => {
+      discoverPeripheralListener.remove();
+    };
+  }, []);
 
-function Section({children, title}: SectionProps): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
+  useEffect(() => {
+    BleManager.checkState().then((state) =>
+  console.log(`3 current BLE state = '${state}'.`)
+);
 
-function App(): JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+    let stopListener = BleManagerEmitter.addListener(
+   'BleManagerStopScan',
+   () => {
+     setIsScanning(false);
+     console.log('Scan is stopped');
+   },
+ );
+}, []);
 
+  useEffect(() => {
+    BleManager.checkState().then((state) =>
+  console.log(`4 current BLE state = '${state}'.`)
+);
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+    // turn on bluetooth if it is not on
+      console.log('useEffect is in!');
+    BleManager.enableBluetooth().then(() => {
+      console.log('Bluetooth is turned on!');
+    })
+      BleManager.start({ showAlert: true })
+      .then(() => {
+        console.log('Bluetooth module initialized');
+        BleManager.checkState().then((state) =>
+  console.log(`after start, urrent BLE state = '${state}'.`)
+);
+
+      })
+      .catch((error) => {
+        console.log('Failed to initialize Bluetooth module', error);
+      });
+    
+  }, []);
+
+  const connectToDevice = (device: Device) => {
+    BleManager.connect(device.id)
+      .then(() => {
+        console.log('Connected to device', device.id);
+        setConnectedDevice(device);
+      })
+      .catch((error) => {
+        console.log('Failed to connect to device', device.id, error);
+      });
   };
 
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Ming, Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
+    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Connected Device</Text>
+      <Button title="Scan Devices" onPress={scanDevices} />
+      {devices.map((device: Device) => (
+      <Button
+          key={device.id}
+          title={`Connect to ${device.name || 'Unknown Device'}`}
+          onPress={() => connectToDevice(device)}
+        />
+        ))}
+        <Button title="Read Characteristic" onPress={readCharacteristic} disabled={!connectedDevice} />
         </View>
-      </ScrollView>
-    </SafeAreaView>
   );
-}
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
+};
 
 export default App;
