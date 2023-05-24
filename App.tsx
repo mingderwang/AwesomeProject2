@@ -4,7 +4,7 @@
  *
  * @format
  */
-import { BleManager } from 'react-native-ble-plx';
+import BleManager from 'react-native-ble-manager';
 import React from 'react';
 import type {PropsWithChildren} from 'react';
 import {
@@ -29,22 +29,22 @@ import { LogBox } from 'react-native';
 LogBox.ignoreLogs(['new NativeEventEmitter']); // Ignore log notification by message
 LogBox.ignoreAllLogs(); //Ignore all log notifications
 
-const bleManager = new BleManager();
+BleManager.start({ showAlert: false })
+.then(() => {
+  console.log('Bluetooth module initialized');
+  // You can now use the static methods provided by BleManager
+  // For example, scan for devices, connect to a device, read/write characteristics, etc.
+})
+.catch((error) => {
+  console.log('Failed to initialize Bluetooth module', error);
+});
+
 
 type SectionProps = PropsWithChildren<{
   title: string;
 }>;
 
-const scanForDevices = () => {
-  bleManager.startDeviceScan(null, null, (error, device) => {
-    if (error) {
-      console.error('Error scanning for devices:', error);
-      return;
-    }
 
-    console.log('Found device:', device?.id, device?.name);
-  });
-};
 
 function Section({children, title}: SectionProps): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
@@ -74,7 +74,7 @@ function Section({children, title}: SectionProps): JSX.Element {
 
 function App(): JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
-  scanForDevices();
+
 
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
@@ -95,7 +95,7 @@ function App(): JSX.Element {
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
           }}>
           <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
+            Ming, Edit <Text style={styles.highlight}>App.tsx</Text> to change this
             screen and then come back to see your edits.
           </Section>
           <Section title="See Your Changes">

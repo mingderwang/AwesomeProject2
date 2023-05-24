@@ -5706,10 +5706,10 @@ react-is@^17.0.1:
   resolved "https://registry.npmjs.org/react-is/-/react-is-17.0.2.tgz"
   integrity sha512-w2GsyukL62IJnlaff/nRegPQR94C/XXamvMWmSHRJ4y7Ts/4ocGRmTHvOs8PSE6pB3dWOrD/nueuU5sduBsQ4w==
 
-react-native-ble-plx@^2.0.3:
-  version "2.0.3"
-  resolved "https://registry.npmjs.org/react-native-ble-plx/-/react-native-ble-plx-2.0.3.tgz"
-  integrity sha512-62LRDBPf/03K7sge+qq2ZuF8PWCGB782G+SBrpgNm5fA5Hs3FCY1ExTJZ1G0tB5ZhBPYEXcKRxPLuFegcDFrqA==
+react-native-ble-manager@^10.0.2:
+  version "10.0.2"
+  resolved "https://registry.npmjs.org/react-native-ble-manager/-/react-native-ble-manager-10.0.2.tgz"
+  integrity sha512-6KlaL/fBvAlk11Yt9zlTnZqfdtGLQCECUaX5Y3E+DZ5BE6LmQ4u7Zvy59bM4TdR2a5UcK+8mNK3XWLjke+QfKw==
 
 react-native-codegen@^0.71.5:
   version "0.71.5"
