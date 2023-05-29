@@ -1,7 +1,7 @@
 /**
  * Sample BLE React Native App
  */
-import { NativeBaseProvider, Box } from "native-base";
+import { NativeBaseProvider, Button, Box, Center} from "native-base";
 
 import React, {useState, useEffect} from 'react';
 import {
@@ -353,7 +353,27 @@ const App = () => {
   return (
     <>
     <NativeBaseProvider>
-      <Box>Hello world</Box>
+    <Center bg="primary.400" _text={{
+      color: "white",
+      fontWeight: "bold"
+    }} height={200} width={{
+      base: 200,
+      lg: 250
+    }}>
+      <Box>
+      <Box alignSelf="center" // bg="primary.500"
+       _text={{
+        fontSize: "md",
+        fontWeight: "medium",
+        color: "warmGray.50",
+        letterSpacing: "lg"
+      }} bg={["red.400", "blue.400"]}>
+    <Button shadow={2} onPress={() => console.log("hello world")}>
+      Click me
+    </Button>
+      </Box>
+      </Box>
+      </Center>
     </NativeBaseProvider>
       <StatusBar />
       <SafeAreaView style={styles.body}>
