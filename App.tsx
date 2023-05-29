@@ -1,6 +1,7 @@
 /**
  * Sample BLE React Native App
  */
+import { NativeBaseProvider, Box } from "native-base";
 
 import React, {useState, useEffect} from 'react';
 import {
@@ -351,6 +352,9 @@ const App = () => {
 
   return (
     <>
+    <NativeBaseProvider>
+      <Box>Hello world</Box>
+    </NativeBaseProvider>
       <StatusBar />
       <SafeAreaView style={styles.body}>
         <Pressable style={styles.scanButton} onPress={startScan}>
