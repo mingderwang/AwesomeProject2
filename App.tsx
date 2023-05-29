@@ -200,7 +200,7 @@ const App = () => {
                 try {
                   console.debug("try--- x ---");
            //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
-           
+
            await BleManager.writeWithoutResponse(
             peripheral.id,
             characteristic.service,
@@ -225,7 +225,7 @@ const App = () => {
                     error,
                   );
                 } finally {
-                  console.debug("finally ------"); 
+                  console.debug("finally ------");
                 }
               }
               }
