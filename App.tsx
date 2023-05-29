@@ -49,7 +49,7 @@ const App = () => {
     new Map<Peripheral['id'], Peripheral>(),
   );
 
-  console.debug('peripherals map updated', [...peripherals.entries()]);
+  console.debug('peripherals map -> updated', [...peripherals.entries()]);
 
   const addOrUpdatePeripheral = (id: string, updatedPeripheral: Peripheral) => {
     // new Map() enables changing the reference & refreshing UI.
@@ -130,6 +130,9 @@ const App = () => {
         );
       }
     } else {
+      console.debug(`mingx pl.id -> $ ${peripheral.id}`)
+      console.debug(`mingx pl.name -> $ ${peripheral.name}`)
+      console.debug(`mingx pl.adv -> $ ${peripheral.advertising}`)
       await connectPeripheral(peripheral);
     }
   };
@@ -192,17 +195,24 @@ const App = () => {
           console.debug("1111");
           for (let characteristic of peripheralData.characteristics) {
             console.debug(`2---- ${characteristic.service} - ${characteristic.characteristic}`);
-            if (characteristic.descriptors) {
-              for (let descriptor of characteristic.descriptors) {
-                console.debug(`4---------${descriptor.uuid}`);
-                if (descriptor != undefined || characteristic != undefined) {
+            console.log(`0--l- ${characteristic.descriptors?.length}`)
+                if (characteristic != undefined) {
                 try {
-                  console.debug("try------");
-                  let data = await BleManager.readDescriptor(
+                  console.debug("try--- x ---");
+           //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
+           
+           await BleManager.writeWithoutResponse(
+            peripheral.id,
+            characteristic.service,
+            characteristic.characteristic,
+            [0x09]
+          );
+
+
+                  let data = await BleManager.read(
                     peripheral.id,
                     characteristic.service,
-                    characteristic.characteristic,
-                    descriptor.uuid,
+                    characteristic.characteristic
                   );
                   console.debug(`data------${data}`);
                   console.debug(
@@ -219,10 +229,8 @@ const App = () => {
                 }
               }
               }
-            }
-          }
         }
-        console.debug("ppp ------");
+        console.debug("ppp ---  ---");
         let p = peripherals.get(peripheral.id);
         if (p) {
           addOrUpdatePeripheral(peripheral.id, {...peripheral, rssi});
