@@ -377,7 +377,7 @@ const App = () => {
       <SafeAreaView style={styles.body}>
         <Pressable style={styles.scanButton} onPress={startScan}>
           <Text style={styles.scanButtonText}>
-            {isScanning ? 'Scanning...' : 'Scan Bluetooth'}
+            {isScanning ? 'Scanning...' : 'Y Scan Bluetooth'}
           </Text>
         </Pressable>
 

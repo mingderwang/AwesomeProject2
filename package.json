@@ -1,12 +1,13 @@
 {
   "name": "AwesomeProject2",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": true,
   "scripts": {
+    "list-devices": "xcrun xctrace list devices",
     "android": "react-native run-android",
-    "ios": "react-native run-ios --verbose",
+    "ios": "react-native run-ios --verbose --device \"iPhoneSE\" --verbose",
     "lint": "eslint .",
-    "start": "npx react-native start --reset-cache --max-workers 4 --verbose",
+    "start": "npx react-native start --reset-cache --verbose",
     "test": "jest"
   },
   "dependencies": {

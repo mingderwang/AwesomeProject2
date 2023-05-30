@@ -25,7 +25,7 @@ const InputDemo = () => {
           <Input placeholder="Chat Room ID" />
         </FormControl>
         <Button colorScheme="green" endIcon={<ArrowForwardIcon size="6" />}>
-          Join In
+          Join XXX2
         </Button>
       </Stack>
     </Box>
