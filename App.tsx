@@ -2,8 +2,9 @@
  * Sample BLE React Native App
  */
 import { NativeBaseProvider, Button, Box, Center} from "native-base";
-
+import {Colors} from 'react-native/Libraries/NewAppScreen';
 import React, {useState, useEffect} from 'react';
+import Swiper from 'react-native-swiper';
 import {
   SafeAreaView,
   StyleSheet,
@@ -18,8 +19,11 @@ import {
   TouchableHighlight,
   Pressable,
 } from 'react-native';
-
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import Password from './components/Password';
+import RemindMe from './components/RemindMe';
+import TextDemo from './components/TextDemo';
+import InputDemo from './components/InputDemo';
+import ReadMe from './components/ReadMe';
 
 const SECONDS_TO_SCAN_FOR = 7;
 const SERVICE_UUIDS: string[] = [];
@@ -353,27 +357,21 @@ const App = () => {
   return (
     <>
     <NativeBaseProvider>
-    <Center bg="primary.400" _text={{
-      color: "white",
-      fontWeight: "bold"
-    }} height={200} width={{
-      base: 200,
-      lg: 250
-    }}>
-      <Box>
-      <Box alignSelf="center" // bg="primary.500"
-       _text={{
-        fontSize: "md",
-        fontWeight: "medium",
-        color: "warmGray.50",
-        letterSpacing: "lg"
-      }} bg={["red.400", "blue.400"]}>
-    <Button shadow={2} onPress={() => console.log("hello world")}>
-      Click me
-    </Button>
-      </Box>
-      </Box>
-      </Center>
+      <Swiper loop={false} index={0} showsPagination={true}>
+        <InputDemo />
+        <Center flex={1} px="3" bg="yellow.200">
+          <ReadMe />
+        </Center>
+        <Center flex={1} px="3">
+          <Password />
+        </Center>
+        <Center flex={1} px="3">
+          <RemindMe />
+        </Center>
+        <Center flex={1} px="3" bg="yellow.400">
+          <TextDemo />
+        </Center>
+      </Swiper>
     </NativeBaseProvider>
       <StatusBar />
       <SafeAreaView style={styles.body}>

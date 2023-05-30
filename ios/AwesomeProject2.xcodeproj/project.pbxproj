@@ -538,6 +538,7 @@
 					"\"/usr/local/include\"",
 				);
 				INFOPLIST_FILE = AwesomeProject2/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -552,6 +553,7 @@
 				PRODUCT_NAME = AwesomeProject2;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				"USER_HEADER_SEARCH_PATHS[arch=*]" = /usr/local/include/openssl;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
@@ -613,6 +615,7 @@
 					"\"/usr/local/include\"",
 				);
 				INFOPLIST_FILE = AwesomeProject2/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 15.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -626,6 +629,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.muzamint.rn.;
 				PRODUCT_NAME = AwesomeProject2;
 				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
 				USER_HEADER_SEARCH_PATHS = "\"/usr/local/include/openssl'";
 				VERSIONING_SYSTEM = "apple-generic";
 			};
