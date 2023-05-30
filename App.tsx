@@ -377,7 +377,7 @@ const App = () => {
       <SafeAreaView style={styles.body}>
         <Pressable style={styles.scanButton} onPress={startScan}>
           <Text style={styles.scanButtonText}>
-            {isScanning ? 'Scanning...' : 'Y Scan Bluetooth'}
+            {isScanning ? 'Scanning...' : 'Scan Bluetooth'}
           </Text>
         </Pressable>
 
@@ -493,7 +493,7 @@ const styles = StyleSheet.create({
   noPeripherals: {
     margin: 10,
     textAlign: 'center',
-    color: Colors.white,
+    color: Colors.black,
   },
 });
 

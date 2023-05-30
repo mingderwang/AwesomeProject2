@@ -7,12 +7,11 @@
     "android": "react-native run-android",
     "ios": "react-native run-ios --verbose --device \"iPhoneSE\" --verbose",
     "lint": "eslint .",
-    "start": "npx react-native start --reset-cache --verbose",
+    "start": "RCT_LOG_LEVEL=verbose npx react-native start --reset-cache --watchFolders .",
     "test": "jest"
   },
   "dependencies": {
     "@react-native-async-storage/async-storage": "^1.18.1",
-    "expo-av": "^13.2.1",
     "expo-modules-core": "^1.2.7",
     "native-base": "^3.4.28",
     "react": "18.2.0",
