@@ -125,7 +125,6 @@ const App = () => {
     }
     if (peripheral.id === '72914599-7f4b-13be-80e6-722ac83adced') {
       addOrUpdatePeripheral(peripheral.id, peripheral);
-      handleStopScan();
     }
   };
 
@@ -395,15 +394,6 @@ AsyncStorage.getItem('counter')
     <NativeBaseProvider>
       <Swiper loop={false} index={0} showsPagination={true}>
         <InputDemo />
-        <Center flex={1} px="3" bg="yellow.200">
-          <ReadMe />
-        </Center>
-        <Center flex={1} px="3">
-          <Password />
-        </Center>
-        <Center flex={1} px="3">
-          <RemindMe />
-        </Center>
         <Center flex={1} px="3" bg="yellow.400">
           <TextDemo />
         </Center>
