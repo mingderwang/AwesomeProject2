@@ -47,7 +47,12 @@ const InputDemo = () => {
     // Reset the counter value in AsyncStorage
     AsyncStorage.removeItem('counter')
       .then(() => {
-        setCounter(0);
+        let newCounter = 0;
+        AsyncStorage.setItem('counter', newCounter.toString())
+        .then(() => {
+          setCounter(newCounter);
+        })
+        .catch(error => console.log('AsyncStorage setItem error:', error));
       })
       .catch(error => console.log('AsyncStorage removeItem error:', error));
   };

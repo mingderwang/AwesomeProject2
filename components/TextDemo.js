@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormControl,
   Input,
@@ -16,24 +16,35 @@ import {
   Button,
   ArrowForwardIcon,
 } from 'native-base';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const TextDemo = () => {
+  const [counter, setCounter] = useState(0);
+  useEffect(() => {
+
+      const interval = setInterval(() => {
+        AsyncStorage.getItem('counter')
+        .then(value => {
+          if (value !== null) {
+            setCounter(parseInt(value));
+          }
+        })
+        .catch(error => console.log('AsyncStorage getItem error:', error));
+   
+      }, 1000); // Interval of 1 second (1000 milliseconds)
+  
+      // Clean up the interval on component unmount
+      return () => {
+        clearInterval(interval);
+      };
+ 
+    }, []);
+
+
   return (
     <Box>
-      <Text fontSize="xs" color="white">
-        xs
-      </Text>
-      <Text fontSize="sm" color="white">
-        sm
-      </Text>
-      <Text fontSize="lg" color="white">
-        lg
-      </Text>
-      <Text fontSize="3xl" color="white">
-        3xl
-      </Text>
       <Text fontSize="6xl" color="white">
-        6xl
+       Current Value {counter}
       </Text>
     </Box>
   );

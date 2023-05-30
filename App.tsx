@@ -24,6 +24,8 @@ import RemindMe from './components/RemindMe';
 import TextDemo from './components/TextDemo';
 import InputDemo from './components/InputDemo';
 import ReadMe from './components/ReadMe';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const SECONDS_TO_SCAN_FOR = 7;
 const SERVICE_UUIDS: string[] = [];
@@ -121,7 +123,9 @@ const App = () => {
     if (!peripheral.name) {
       peripheral.name = 'NO NAME';
     }
-    addOrUpdatePeripheral(peripheral.id, peripheral);
+    if (peripheral.id === '72914599-7f4b-13be-80e6-722ac83adced') {
+      addOrUpdatePeripheral(peripheral.id, peripheral);
+    }
   };
 
   const togglePeripheralConnection = async (peripheral: Peripheral) => {
@@ -206,13 +210,20 @@ const App = () => {
                   console.debug("try--- x ---");
            //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
 
-           await BleManager.writeWithoutResponse(
-            peripheral.id,
-            characteristic.service,
-            characteristic.characteristic,
-            [0x09]
-          );
-
+let newValue=0;
+AsyncStorage.getItem('counter')
+.then(value => {
+  if (value !== null) {
+    newValue = (parseInt(value))
+  
+     BleManager.writeWithoutResponse(
+     peripheral.id,
+     characteristic.service,
+     characteristic.characteristic,
+     [newValue]
+   );
+}})
+.catch(error => console.log('AsyncStorage getItem error:', error));
 
                   let data = await BleManager.read(
                     peripheral.id,

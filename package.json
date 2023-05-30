@@ -1,6 +1,6 @@
 {
   "name": "AwesomeProject2",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "private": true,
   "scripts": {
     "list-devices": "xcrun xctrace list devices",
