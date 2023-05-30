@@ -23,7 +23,7 @@ const TextDemo = () => {
   useEffect(() => {
 
       const interval = setInterval(() => {
-        AsyncStorage.getItem('counter')
+        AsyncStorage.getItem('readValue')
         .then(value => {
           if (value !== null) {
             setCounter(parseInt(value));

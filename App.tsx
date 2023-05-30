@@ -125,6 +125,7 @@ const App = () => {
     }
     if (peripheral.id === '72914599-7f4b-13be-80e6-722ac83adced') {
       addOrUpdatePeripheral(peripheral.id, peripheral);
+      handleStopScan();
     }
   };
 
@@ -163,6 +164,29 @@ const App = () => {
         var peripheral = connectedPeripherals[i];
         addOrUpdatePeripheral(peripheral.id, {...peripheral, connected: true});
       }
+
+
+      try {
+        let data = await BleManager.read(
+          peripheral.id,
+          "0000fe40-cc7a-482a-984a-7f2ed5b3e58f",
+          "0000fe41-8e22-4541-9d4c-21edae82ed19"
+        );
+        console.debug(`read back data------${data}`);
+        AsyncStorage.setItem('readValue', data.toString())
+        .then(() => {
+          console.debug(`new value ${data} is saved`);
+        })
+        .catch(error => console.log('AsyncStorage setItem error:', error));
+
+        await BleManager.disconnect(peripheral.id);
+      } catch (error) {
+        console.error(
+          `[togglePeripheralConnection][${peripheral.id}] error when trying to disconnect device.`,
+          error,
+        );
+      }
+
     } catch (error) {
       console.error(
         '[retrieveConnected] unable to retrieve connected peripherals.',
@@ -213,6 +237,7 @@ const App = () => {
 let newValue=0;
 AsyncStorage.getItem('counter')
 .then(value => {
+  console.log(`--------> getItem ${value}`);
   if (value !== null) {
     newValue = (parseInt(value))
   
@@ -394,7 +419,7 @@ AsyncStorage.getItem('counter')
 
         <Pressable style={styles.scanButton} onPress={retrieveConnected}>
           <Text style={styles.scanButtonText}>
-            {'Retrieve connected peripherals'}
+            {'Read it back'}
           </Text>
         </Pressable>
 
