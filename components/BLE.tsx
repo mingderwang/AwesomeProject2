@@ -1,7 +1,7 @@
 /**
  * Sample BLE React Native App
  */
-import {NativeBaseProvider, Button, Box, Center} from 'native-base';
+import { NativeBaseProvider, Button, Box, Center} from "native-base";
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import React, {useState, useEffect} from 'react';
 import Swiper from 'react-native-swiper';
@@ -19,14 +19,13 @@ import {
   TouchableHighlight,
   Pressable,
 } from 'react-native';
-import ColorControl from './components/ColorControl';
-import Password from './components/Password';
-import RemindMe from './components/RemindMe';
-import TextDemo from './components/TextDemo';
-import InputDemo from './components/InputDemo';
-import BLE from './components/BLE';
+import Password from './Password';
+import RemindMe from './RemindMe';
+import TextDemo from './TextDemo';
+import InputDemo from './InputDemo';
+import ReadMe from './ReadMe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import x from './package.json';
+import x from '../package.json';
 console.log(`🍔 Current app version: ${x.version}`);
 
 const SECONDS_TO_SCAN_FOR = 7;
@@ -141,9 +140,9 @@ const App = () => {
         );
       }
     } else {
-      console.debug(`mingx pl.id -> $ ${peripheral.id}`);
-      console.debug(`mingx pl.name -> $ ${peripheral.name}`);
-      console.debug(`mingx pl.adv -> $ ${peripheral.advertising}`);
+      console.debug(`mingx pl.id -> $ ${peripheral.id}`)
+      console.debug(`mingx pl.name -> $ ${peripheral.name}`)
+      console.debug(`mingx pl.adv -> $ ${peripheral.advertising}`)
       await connectPeripheral(peripheral);
     }
   };
@@ -166,18 +165,19 @@ const App = () => {
         addOrUpdatePeripheral(peripheral.id, {...peripheral, connected: true});
       }
 
+
       try {
         let data = await BleManager.read(
           peripheral.id,
-          '0000fe40-cc7a-482a-984a-7f2ed5b3e58f',
-          '0000fe41-8e22-4541-9d4c-21edae82ed19',
+          "0000fe40-cc7a-482a-984a-7f2ed5b3e58f",
+          "0000fe41-8e22-4541-9d4c-21edae82ed19"
         );
         console.debug(`read back data------${data}`);
         AsyncStorage.setItem('readValue', data.toString())
-          .then(() => {
-            console.debug(`new value ${data} is saved`);
-          })
-          .catch(error => console.log('AsyncStorage setItem error:', error));
+        .then(() => {
+          console.debug(`new value ${data} is saved`);
+        })
+        .catch(error => console.log('AsyncStorage setItem error:', error));
 
         await BleManager.disconnect(peripheral.id);
       } catch (error) {
@@ -186,6 +186,7 @@ const App = () => {
           error,
         );
       }
+
     } catch (error) {
       console.error(
         '[retrieveConnected] unable to retrieve connected peripherals.',
@@ -224,58 +225,53 @@ const App = () => {
         );
 
         if (peripheralData.characteristics) {
-          console.debug('1111');
+          console.debug("1111");
           for (let characteristic of peripheralData.characteristics) {
-            console.debug(
-              `2---- ${characteristic.service} - ${characteristic.characteristic}`,
-            );
-            console.log(`0--l- ${characteristic.descriptors?.length}`);
-            if (characteristic != undefined) {
-              try {
-                console.debug('try--- x ---');
-                //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
+            console.debug(`2---- ${characteristic.service} - ${characteristic.characteristic}`);
+            console.log(`0--l- ${characteristic.descriptors?.length}`)
+                if (characteristic != undefined) {
+                try {
+                  console.debug("try--- x ---");
+           //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
 
-                let newValue = 0;
-                AsyncStorage.getItem('counter')
-                  .then(value => {
-                    console.log(`--------> getItem ${value}`);
-                    if (value !== null) {
-                      newValue = parseInt(value);
+let newValue=0;
+AsyncStorage.getItem('counter')
+.then(value => {
+  console.log(`--------> getItem ${value}`);
+  if (value !== null) {
+    newValue = (parseInt(value))
+  
+     BleManager.writeWithoutResponse(
+     peripheral.id,
+     characteristic.service,
+     characteristic.characteristic,
+     [newValue]
+   );
+}})
+.catch(error => console.log('AsyncStorage getItem error:', error));
 
-                      BleManager.writeWithoutResponse(
-                        peripheral.id,
-                        characteristic.service,
-                        characteristic.characteristic,
-                        [newValue],
-                      );
-                    }
-                  })
-                  .catch(error =>
-                    console.log('AsyncStorage getItem error:', error),
+                  let data = await BleManager.read(
+                    peripheral.id,
+                    characteristic.service,
+                    characteristic.characteristic
                   );
-
-                let data = await BleManager.read(
-                  peripheral.id,
-                  characteristic.service,
-                  characteristic.characteristic,
-                );
-                console.debug(`data------${data}`);
-                console.debug(
-                  `[connectPeripheral][${peripheral.id}] descriptor read as:`,
-                  data,
-                );
-              } catch (error) {
-                console.debug(
-                  `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
-                  error,
-                );
-              } finally {
-                console.debug('finally ------');
+                  console.debug(`data------${data}`);
+                  console.debug(
+                    `[connectPeripheral][${peripheral.id}] descriptor read as:`,
+                    data,
+                  );
+                } catch (error) {
+                  console.debug(
+                    `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
+                    error,
+                  );
+                } finally {
+                  console.debug("finally ------");
+                }
               }
-            }
-          }
+              }
         }
-        console.debug('ppp ---  ---');
+        console.debug("ppp ---  ---");
         let p = peripherals.get(peripheral.id);
         if (p) {
           addOrUpdatePeripheral(peripheral.id, {...peripheral, rssi});
@@ -396,21 +392,129 @@ const App = () => {
 
   return (
     <>
-      <NativeBaseProvider>
-        <Swiper loop={false} index={0} showsPagination={true}>
-          <ColorControl />
-          <BLE />
-          <Center flex={1} px="3" bg="yellow.400">
-            <InputDemo />
-          </Center>
-          <Center flex={1} px="3" bg="yellow.400">
-            <TextDemo />
-          </Center>
-        </Swiper>
-      </NativeBaseProvider>
+    
       <StatusBar />
+      <SafeAreaView style={styles.body}>
+        <Pressable style={styles.scanButton} onPress={startScan}>
+          <Text style={styles.scanButtonText}>
+            {isScanning ? 'Scanning...' : 'Scan Bluetooth'}
+          </Text>
+        </Pressable>
+
+        <Pressable style={styles.scanButton} onPress={retrieveConnected}>
+          <Text style={styles.scanButtonText}>
+            {'Read it back'}
+          </Text>
+        </Pressable>
+
+        {Array.from(peripherals.values()).length === 0 && (
+          <View style={styles.row}>
+            <Text style={styles.noPeripherals}>
+              No Peripherals, press "Scan Bluetooth" above.
+            </Text>
+          </View>
+        )}
+
+        <FlatList
+          data={Array.from(peripherals.values())}
+          contentContainerStyle={{rowGap: 12}}
+          renderItem={renderItem}
+          keyExtractor={item => item.id}
+        />
+      </SafeAreaView>
     </>
   );
 };
+
+const boxShadow = {
+  shadowColor: '#000',
+  shadowOffset: {
+    width: 0,
+    height: 2,
+  },
+  shadowOpacity: 0.25,
+  shadowRadius: 3.84,
+  elevation: 5,
+};
+
+const styles = StyleSheet.create({
+  engine: {
+    position: 'absolute',
+    right: 10,
+    bottom: 0,
+    color: Colors.black,
+  },
+  scanButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 16,
+    backgroundColor: '#0a398a',
+    margin: 10,
+    borderRadius: 12,
+    ...boxShadow,
+  },
+  scanButtonText: {
+    fontSize: 20,
+    letterSpacing: 0.25,
+    color: Colors.white,
+  },
+  body: {
+    backgroundColor: '#0082FC',
+    flex: 1,
+  },
+  sectionContainer: {
+    marginTop: 32,
+    paddingHorizontal: 24,
+  },
+  sectionTitle: {
+    fontSize: 24,
+    fontWeight: '600',
+    color: Colors.black,
+  },
+  sectionDescription: {
+    marginTop: 8,
+    fontSize: 18,
+    fontWeight: '400',
+    color: Colors.dark,
+  },
+  highlight: {
+    fontWeight: '700',
+  },
+  footer: {
+    color: Colors.dark,
+    fontSize: 12,
+    fontWeight: '600',
+    padding: 4,
+    paddingRight: 12,
+    textAlign: 'right',
+  },
+  peripheralName: {
+    fontSize: 16,
+    textAlign: 'center',
+    padding: 10,
+  },
+  rssi: {
+    fontSize: 12,
+    textAlign: 'center',
+    padding: 2,
+  },
+  peripheralId: {
+    fontSize: 12,
+    textAlign: 'center',
+    padding: 2,
+    paddingBottom: 20,
+  },
+  row: {
+    marginLeft: 10,
+    marginRight: 10,
+    borderRadius: 20,
+    ...boxShadow,
+  },
+  noPeripherals: {
+    margin: 10,
+    textAlign: 'center',
+    color: Colors.black,
+  },
+});
 
 export default App;
