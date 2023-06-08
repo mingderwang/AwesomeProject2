@@ -25,7 +25,8 @@ import TextDemo from './components/TextDemo';
 import InputDemo from './components/InputDemo';
 import ReadMe from './components/ReadMe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import x from './package.json';
+console.log(x.version);
 
 const SECONDS_TO_SCAN_FOR = 7;
 const SERVICE_UUIDS: string[] = [];
@@ -123,7 +124,7 @@ const App = () => {
     if (!peripheral.name) {
       peripheral.name = 'NO NAME';
     }
-    if (peripheral.id === '72914599-7f4b-13be-80e6-722ac83adced') {
+    if (peripheral.name === 'Peer to Peer Server') {
       addOrUpdatePeripheral(peripheral.id, peripheral);
     }
   };
