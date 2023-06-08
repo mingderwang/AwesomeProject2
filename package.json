@@ -1,11 +1,11 @@
 {
   "name": "AwesomeProject2",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "private": true,
   "scripts": {
     "list-devices": "xcrun xctrace list devices",
     "android": "react-native run-android",
-    "ios": "react-native run-ios --verbose --device \"iPhoneSE\" --verbose",
+    "ios": "react-native run-ios --verbose --device \"iPod touch\" --verbose",
     "lint": "eslint .",
     "start": "RCT_LOG_LEVEL=verbose npx react-native start --reset-cache --watchFolders .",
     "test": "jest"
