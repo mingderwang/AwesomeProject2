@@ -169,8 +169,8 @@ const App = () => {
       try {
         let data = await BleManager.read(
           peripheral.id,
-          '0000fe40-cc7a-482a-984a-7f2ed5b3e58f',
-          '0000fe41-8e22-4541-9d4c-21edae82ed19',
+          '0000a912c-8cb0-4a7c-a35f-6e1a5d8e236b',
+          '0000a912c-8cb1-4a7c-a35f-6e1a5d8e236b',
         );
         console.debug(`read back data------${data}`);
         AsyncStorage.setItem('readValue', data.toString())
