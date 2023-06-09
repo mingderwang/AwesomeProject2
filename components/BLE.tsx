@@ -26,6 +26,11 @@ import InputDemo from './InputDemo';
 import ReadMe from './ReadMe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import x from '../package.json';
+import { hexToRgbArray } from '../libs/'
+const hexColor = '#aa00ff';
+const rgbArray = hexToRgbArray(hexColor);
+console.log(rgbArray); // Output: [170, 0, 255]
+
 console.log(`🍔 Current app version: ${x.version}`);
 
 const SECONDS_TO_SCAN_FOR = 7;
@@ -235,9 +240,12 @@ const App = () => {
            //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
 
 let newValue=0;
-AsyncStorage.getItem('counter')
+AsyncStorage.getItem('hexValue')
 .then(value => {
-  console.log(`--------> getItem ${value}`);
+  console.log(`--------------> hex getItem ${value}`);
+  const rgbArray = hexToRgbArray(value +'');
+  console.log(rgbArray); // Output: [170, 0, 255]
+
   if (value !== null) {
     newValue = (parseInt(value))
   
@@ -245,7 +253,7 @@ AsyncStorage.getItem('counter')
      peripheral.id,
      characteristic.service,
      characteristic.characteristic,
-     [newValue]
+     rgbArray
    );
 }})
 .catch(error => console.log('AsyncStorage getItem error:', error));

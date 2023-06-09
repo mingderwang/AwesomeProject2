@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
-
 import ColorPicker, { Panel1, Swatches, colorKit, PreviewText, HueCircular } from 'reanimated-color-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function ColorControl() {
   const [showModal, setShowModal] = useState(false);
 
   const customSwatches = new Array(6).fill('#fff').map(() => colorKit.randomRgbColor().hex());
-
+  
   const selectedColor = useSharedValue(customSwatches[0]);
   const backgroundColorStyle = useAnimatedStyle(() => ({ backgroundColor: selectedColor.value }));
 
   const onColorSelect = (color) => {
     selectedColor.value = color.hex;
+    console.log(`color: ${selectedColor.value}`)
+    AsyncStorage.setItem('hexValue', selectedColor.value)
+    .then(() => {
+      console.debug(`new hex value ${selectedColor.value} is saved`);
+    })
   };
 
   return (
