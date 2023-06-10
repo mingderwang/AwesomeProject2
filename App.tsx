@@ -20,10 +20,9 @@ import {
   Pressable,
 } from 'react-native';
 import ColorControl from './components/ColorControl';
-import Password from './components/Password';
 import RemindMe from './components/RemindMe';
 import TextDemo from './components/TextDemo';
-import InputDemo from './components/InputDemo';
+import LogComponent from './components/LogComponent';
 import BLE from './components/BLE';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import x from './package.json';
@@ -57,8 +56,6 @@ const App = () => {
   const [peripherals, setPeripherals] = useState(
     new Map<Peripheral['id'], Peripheral>(),
   );
-
-  console.debug('peripherals map -> updated', [...peripherals.entries()]);
 
   const addOrUpdatePeripheral = (id: string, updatedPeripheral: Peripheral) => {
     // new Map() enables changing the reference & refreshing UI.
@@ -133,7 +130,8 @@ const App = () => {
   const togglePeripheralConnection = async (peripheral: Peripheral) => {
     if (peripheral && peripheral.connected) {
       try {
-        await BleManager.disconnect(peripheral.id);
+        BleManager.disconnect(peripheral.id)
+        .then(console.log)
       } catch (error) {
         console.error(
           `[togglePeripheralConnection][${peripheral.id}] error when trying to disconnect device.`,
@@ -324,7 +322,6 @@ const App = () => {
     handleAndroidPermissions();
 
     return () => {
-      console.debug('[app] main component unmounting. Removing listeners...');
       for (const listener of listeners) {
         listener.remove();
       }
@@ -401,11 +398,9 @@ const App = () => {
           <ColorControl />
           <BLE />
           <Center flex={1} px="3" bg="yellow.400">
-            <InputDemo />
-          </Center>
-          <Center flex={1} px="3" bg="yellow.400">
             <TextDemo />
           </Center>
+          <LogComponent/>
         </Swiper>
       </NativeBaseProvider>
       <StatusBar />

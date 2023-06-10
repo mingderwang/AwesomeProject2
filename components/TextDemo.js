@@ -17,6 +17,8 @@ import {
   ArrowForwardIcon,
 } from 'native-base';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import x from '../package.json';
+console.log(`🍔 Current app version: ${x.version}`);
 
 const TextDemo = () => {
   const [counter, setCounter] = useState(0);
@@ -44,7 +46,7 @@ const TextDemo = () => {
   return (
     <Box>
       <Text fontSize="6xl" color="white">
-       Current Value {counter}
+      🍔 {x.version}
       </Text>
     </Box>
   );

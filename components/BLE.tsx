@@ -27,9 +27,6 @@ import ReadMe from './ReadMe';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import x from '../package.json';
 import { hexToRgbArray } from '../libs/'
-const hexColor = '#aa00ff';
-const rgbArray = hexToRgbArray(hexColor);
-console.log(rgbArray); // Output: [170, 0, 255]
 
 console.log(`🍔 Current app version: ${x.version}`);
 
@@ -61,8 +58,6 @@ const App = () => {
   const [peripherals, setPeripherals] = useState(
     new Map<Peripheral['id'], Peripheral>(),
   );
-
-  console.debug('peripherals map -> updated', [...peripherals.entries()]);
 
   const addOrUpdatePeripheral = (id: string, updatedPeripheral: Peripheral) => {
     // new Map() enables changing the reference & refreshing UI.
@@ -151,7 +146,7 @@ const App = () => {
       await connectPeripheral(peripheral);
     }
   };
-
+// remove this
   const retrieveConnected = async () => {
     try {
       const connectedPeripherals = await BleManager.getConnectedPeripherals();
@@ -328,7 +323,6 @@ AsyncStorage.getItem('hexValue')
     handleAndroidPermissions();
 
     return () => {
-      console.debug('[app] main component unmounting. Removing listeners...');
       for (const listener of listeners) {
         listener.remove();
       }
@@ -406,12 +400,6 @@ AsyncStorage.getItem('hexValue')
         <Pressable style={styles.scanButton} onPress={startScan}>
           <Text style={styles.scanButtonText}>
             {isScanning ? 'Scanning...' : 'Scan Bluetooth'}
-          </Text>
-        </Pressable>
-
-        <Pressable style={styles.scanButton} onPress={retrieveConnected}>
-          <Text style={styles.scanButtonText}>
-            {'Read it back'}
           </Text>
         </Pressable>
 
