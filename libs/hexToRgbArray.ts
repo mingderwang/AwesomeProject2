@@ -3,9 +3,9 @@ export  function hexToRgbArray(hex: string): number[] {
     hex = hex.replace('#', '');
   
     // Split the hex value into red, green, and blue components
-    const red = parseInt(hex.substring(0, 2), 16);
-    const green = parseInt(hex.substring(2, 4), 16);
-    const blue = parseInt(hex.substring(4, 6), 16);
+    const red = 255 - parseInt(hex.substring(0, 2), 16);
+    const green = 255 - parseInt(hex.substring(2, 4), 16);
+    const blue = 255 - parseInt(hex.substring(4, 6), 16);
   
     // Return an array of the RGB values
     return [red, green, blue];
