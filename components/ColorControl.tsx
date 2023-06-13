@@ -12,7 +12,8 @@ import BleManager, {
   BleScanMode,
   Peripheral,
 } from 'react-native-ble-manager';
-import { hexToRgbArray } from '../libs/'
+import { hexToRgbArray } from '../libs/';
+import debounce from 'lodash.debounce';
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
@@ -26,9 +27,28 @@ function sleep(ms: number) {
   return new Promise<void>(resolve => setTimeout(resolve, ms));
 }
 
-const changeColor = () => togglePeripheralConnection({id:COLOR_LED_STRIP_BLE_ID, name:'', advertising: {}, rssi:1})}
-
 export default function ColorControl() {
+  const [color, setColor] = useState('#000000');
+  const [peripherals, setPeripherals] = useState(
+    new Map<Peripheral['id'], Peripheral>(),
+  );
+
+  const onColorChange = (newColor: any) => {
+    console.log('Color changed:', newColor);
+    // Do something with the new color value
+    selectedColor.value = newColor.hex;
+    console.log(`color: ${selectedColor.value}`)
+  //  setColor(newColor.hex);
+    changeColor(newColor.hex);
+  };
+
+  function handleColorChange(newColor: any) {
+    setColor(newColor.hex);
+    debouncedOnColorChange(newColor);
+  }
+
+  const debouncedOnColorChange = debounce(onColorChange, 500);
+
   const customSwatches = new Array(6).fill('#fff').map(() => colorKit.randomRgbColor().hex());
   const selectedColor = useSharedValue(customSwatches[0]);
   const backgroundColorStyle = useAnimatedStyle(() => ({ backgroundColor: selectedColor.value }));
@@ -38,16 +58,10 @@ export default function ColorControl() {
   const handleDisconnectedPeripheral = () => {console.log('zz')};
   function handleUpdateValueForCharacteristic() { console.log('oo'); }
 
-  const changeColor = () => togglePeripheralConnection({id:COLOR_LED_STRIP_BLE_ID, name:'', advertising: {}, rssi:1})}
-
-  useEffect(() => {
-      changeColor();
-
-      return () => {
-      console.log('ble color updated')
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const changeColor = (color: any) => {
+    togglePeripheralConnection(color, {id:COLOR_LED_STRIP_BLE_ID, name:'', advertising: {}, rssi:1});
+    console.log('changeColor is called');
+  }
   
   useEffect(() => {
     try {
@@ -94,10 +108,8 @@ export default function ColorControl() {
   const onColorSelect = (color: any) => {
     selectedColor.value = color.hex;
     console.log(`color: ${selectedColor.value}`)
-    AsyncStorage.setItem('hexValue', selectedColor.value)
-    .then(() => {
-      console.debug(`new hex value ${selectedColor.value} is saved`);
-    })
+    changeColor();
+    setColor(selectedColor.value)
   };
 
   const addOrUpdatePeripheral = (id: string, updatedPeripheral: Peripheral) => {
@@ -106,7 +118,7 @@ export default function ColorControl() {
     setPeripherals(map => new Map(map.set(id, updatedPeripheral)));
   };
 
-  const connectPeripheral = async (peripheral: Peripheral) => {
+  const connectPeripheral = async (color: any, peripheral: Peripheral) => {
     try {
       if (peripheral) {
         addOrUpdatePeripheral(peripheral.id, {...peripheral, connecting: true});
@@ -130,24 +142,12 @@ export default function ColorControl() {
           peripheralData,
         );
 
-        const rssi = await BleManager.readRSSI(peripheral.id);
-        console.debug(
-          `[connectPeripheral][${peripheral.id}] retrieved current RSSI value: ${rssi}.`,
-        );
-
         if (peripheralData.characteristics) {
-          console.debug("1111");
           for (let characteristic of peripheralData.characteristics) {
-            console.debug(`2---- ${characteristic.service} - ${characteristic.characteristic}`);
-            console.log(`0--l- ${characteristic.descriptors?.length}`)
                 if (characteristic != undefined) {
                 try {
-                  console.debug("try--- x ---");
-           //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
-
 let newValue=0;
-AsyncStorage.getItem('hexValue')
-.then(value => {
+  let value=color;
   console.log(`--------------> hex getItem ${value}`);
   const rgbArray = hexToRgbArray(value +'');
   console.log(rgbArray); // Output: [170, 0, 255]
@@ -161,19 +161,7 @@ AsyncStorage.getItem('hexValue')
      characteristic.characteristic,
      rgbArray
    );
-}})
-.catch(error => console.log('AsyncStorage getItem error:', error));
-
-                  let data = await BleManager.read(
-                    peripheral.id,
-                    characteristic.service,
-                    characteristic.characteristic
-                  );
-                  console.debug(`data------${data}`);
-                  console.debug(
-                    `[connectPeripheral][${peripheral.id}] descriptor read as:`,
-                    data,
-                  );
+}
                 } catch (error) {
                   console.debug(
                     `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
@@ -194,7 +182,7 @@ AsyncStorage.getItem('hexValue')
     }
   };
 
-  const togglePeripheralConnection = async (peripheral: Peripheral) => {
+  const togglePeripheralConnection = async (color: any, peripheral: Peripheral) => {
     if (peripheral && peripheral.connected) {
       try {
         await BleManager.disconnect(peripheral.id);
@@ -208,7 +196,7 @@ AsyncStorage.getItem('hexValue')
       console.debug(`mingx pl.id -> $ ${peripheral.id}`)
       console.debug(`mingx pl.name -> $ ${peripheral.name}`)
       console.debug(`mingx pl.adv -> $ ${peripheral.advertising}`)
-      await connectPeripheral(peripheral);
+      await connectPeripheral(color, peripheral);
     }
   };
 
@@ -216,49 +204,19 @@ AsyncStorage.getItem('hexValue')
     <>
     <Animated.View style={[styles.container, backgroundColorStyle]}>
           <View style={styles.pickerContainer}>
-            <ColorPicker value={selectedColor.value} sliderThickness={20} thumbSize={24} onChange={onColorSelect} boundedThumb>
+            <ColorPicker value={selectedColor.value} sliderThickness={20} thumbSize={24} onChange={handleColorChange} boundedThumb>
               <HueCircular containerStyle={styles.hueContainer} thumbShape='pill'>
                 <Panel1 style={styles.panelStyle} />
               </HueCircular>
               <Swatches style={styles.swatchesContainer} swatchStyle={styles.swatchStyle} colors={customSwatches} />
             </ColorPicker>
           </View>
-        <Pressable style={styles.scanButton} onPress={() => togglePeripheralConnection({id:COLOR_LED_STRIP_BLE_ID, name:'', advertising: {}, rssi:1})}>
-          <Text style={styles.scanButtonText}>
-           換顏色
-          </Text>
-        </Pressable>
         </Animated.View>
     </>
   );
 }
 
-const boxShadow = {
-  shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 2,
-  },
-  shadowOpacity: 0.25,
-  shadowRadius: 3.84,
-  elevation: 5,
-};
-
 const styles = StyleSheet.create({
-  scanButtonText: {
-    fontSize: 20,
-    letterSpacing: 0.25,
-    color: Colors.white,
-  },
-  scanButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 16,
-    backgroundColor: '#0a398a',
-    margin: 10,
-    borderRadius: 12,
-    ...boxShadow,
-  },
   container: {
     flex: 1,
     justifyContent: 'center',
