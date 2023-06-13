@@ -20,7 +20,7 @@ import {
 } from 'react-native';
 import ColorControl from './components/ColorControl';
 import RemindMe from './components/RemindMe';
-import TextDemo from './components/TextDemo';
+import TextDemo from './components/Version';
 import LogComponent from './components/LogComponent';
 import BLE from './components/BLE';
 import AsyncStorage from '@react-native-async-storage/async-storage';
