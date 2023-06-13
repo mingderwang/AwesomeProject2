@@ -38,12 +38,20 @@ export default function ColorControl() {
     // Do something with the new color value
     selectedColor.value = newColor.hex;
     console.log(`color: ${selectedColor.value}`)
-  //  setColor(newColor.hex);
+  AsyncStorage.setItem('hexValue', newColor.hex)
+  .then(() => {
+    setColor(newColor.hex);
+  })
+  .catch(error => console.log('AsyncStorage setItem error:', error));
     changeColor(newColor.hex);
   };
 
   function handleColorChange(newColor: any) {
-    setColor(newColor.hex);
+    AsyncStorage.setItem('hexValue', newColor.hex)
+    .then(() => {
+      setColor(newColor.hex);
+    })
+    .catch(error => console.log('AsyncStorage setItem error:', error));
     debouncedOnColorChange(newColor);
   }
 
@@ -167,9 +175,7 @@ let newValue=0;
                     `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
                     error,
                   );
-                } finally {
-                  console.debug("finally ------");
-                }
+                }; 
               }
               }
         }

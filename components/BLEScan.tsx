@@ -19,7 +19,7 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { hexToRgbArray } from '../libs/'
+import {hexToRgbArray} from '../libs';
 
 const SECONDS_TO_SCAN_FOR = 1;
 const SERVICE_UUIDS: string[] = [];
@@ -44,7 +44,7 @@ declare module 'react-native-ble-manager' {
   }
 }
 
-const App = () => {
+const BLEScan = () => {
   const [isScanning, setIsScanning] = useState(false);
   const [peripherals, setPeripherals] = useState(
     new Map<Peripheral['id'], Peripheral>(),
@@ -131,13 +131,12 @@ const App = () => {
         );
       }
     } else {
-      console.debug(`mingx pl.id -> $ ${peripheral.id}`)
-      console.debug(`mingx pl.name -> $ ${peripheral.name}`)
-      console.debug(`mingx pl.adv -> $ ${peripheral.advertising}`)
+      console.debug(`mingx pl.id -> $ ${peripheral.id}`);
+      console.debug(`mingx pl.name -> $ ${peripheral.name}`);
+      console.debug(`mingx pl.adv -> $ ${peripheral.advertising}`);
       await connectPeripheral(peripheral);
     }
   };
-// remove this
   const retrieveConnected = async () => {
     try {
       const connectedPeripherals = await BleManager.getConnectedPeripherals();
@@ -156,20 +155,7 @@ const App = () => {
         addOrUpdatePeripheral(peripheral.id, {...peripheral, connected: true});
       }
 
-
       try {
-        let data = await BleManager.read(
-          peripheral.id,
-          "0000fe40-cc7a-482a-984a-7f2ed5b3e58f",
-          "0000fe41-8e22-4541-9d4c-21edae82ed19"
-        );
-        console.debug(`read back data------${data}`);
-        AsyncStorage.setItem('readValue', data.toString())
-        .then(() => {
-          console.debug(`new value ${data} is saved`);
-        })
-        .catch(error => console.log('AsyncStorage setItem error:', error));
-
         await BleManager.disconnect(peripheral.id);
       } catch (error) {
         console.error(
@@ -177,7 +163,6 @@ const App = () => {
           error,
         );
       }
-
     } catch (error) {
       console.error(
         '[retrieveConnected] unable to retrieve connected peripherals.',
@@ -216,56 +201,57 @@ const App = () => {
         );
 
         if (peripheralData.characteristics) {
-          console.debug("1111");
           for (let characteristic of peripheralData.characteristics) {
-            console.debug(`2---- ${characteristic.service} - ${characteristic.characteristic}`);
-            console.log(`0--l- ${characteristic.descriptors?.length}`)
-                if (characteristic != undefined) {
-                try {
-                  console.debug("try--- x ---");
-           //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
+            console.debug(
+              ` ${characteristic.service} - ${characteristic.characteristic}`,
+            );
+            console.log(`🍔 ${characteristic.descriptors?.length}`);
+            if (characteristic != undefined) {
+              try {
+                //       write(peripheralId: string, serviceUUID: string, characteristicUUID: string, data: number[], maxByteSize?: number): Promise<void>;
 
-let newValue=0;
-AsyncStorage.getItem('hexValue')
-.then(value => {
-  console.log(`--------------> hex getItem ${value}`);
-  const rgbArray = hexToRgbArray(value +'');
-  console.log(rgbArray); // Output: [170, 0, 255]
+                let newValue = 0;
+                AsyncStorage.getItem('hexValue')
+                  .then(value => {
+                    console.log(`hexValue getItem ${value}`);
+                    const rgbArray = hexToRgbArray(value + '');
+                    console.log(rgbArray); // Output: [170, 0, 255]
 
-  if (value !== null) {
-    newValue = (parseInt(value))
-  
-     BleManager.writeWithoutResponse(
-     peripheral.id,
-     characteristic.service,
-     characteristic.characteristic,
-     rgbArray
-   );
-}})
-.catch(error => console.log('AsyncStorage getItem error:', error));
+                    if (value !== null) {
+                      newValue = parseInt(value);
 
-                  let data = await BleManager.read(
-                    peripheral.id,
-                    characteristic.service,
-                    characteristic.characteristic
+                      BleManager.writeWithoutResponse(
+                        peripheral.id,
+                        characteristic.service,
+                        characteristic.characteristic,
+                        rgbArray,
+                      );
+                    }
+                  })
+                  .catch(error =>
+                    console.log('AsyncStorage getItem error:', error),
                   );
-                  console.debug(`data------${data}`);
-                  console.debug(
-                    `[connectPeripheral][${peripheral.id}] descriptor read as:`,
-                    data,
-                  );
-                } catch (error) {
-                  console.debug(
-                    `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
-                    error,
-                  );
-                } finally {
-                  console.debug("finally ------");
-                }
+
+                let data = await BleManager.read(
+                  peripheral.id,
+                  characteristic.service,
+                  characteristic.characteristic,
+                );
+                console.debug(`data------${data}`);
+                console.debug(
+                  `[connectPeripheral][${peripheral.id}] descriptor read as:`,
+                  data,
+                );
+              } catch (error) {
+                console.debug(
+                  `[connectPeripheral][${peripheral.id}] failed to retrieve descriptor ${descriptor} for characteristic ${characteristic}:`,
+                  error,
+                );
+              } finally {
               }
-              }
+            }
+          }
         }
-        console.debug("ppp ---  ---");
         let p = peripherals.get(peripheral.id);
         if (p) {
           addOrUpdatePeripheral(peripheral.id, {...peripheral, rssi});
@@ -377,7 +363,6 @@ AsyncStorage.getItem('hexValue')
             {item.connecting && ' - 連線中...'}
           </Text>
           <Text style={styles.rssi}>RSSI: {item.rssi}</Text>
-         
         </View>
       </TouchableHighlight>
     );
@@ -385,7 +370,6 @@ AsyncStorage.getItem('hexValue')
 
   return (
     <>
-    
       <StatusBar />
       <SafeAreaView style={styles.body}>
         <Pressable style={styles.scanButton} onPress={startScan}>
@@ -397,7 +381,16 @@ AsyncStorage.getItem('hexValue')
         {Array.from(peripherals.values()).length === 0 && (
           <View style={styles.row}>
             <Text style={styles.noPeripherals}>
-              尚無連結, 請按 "開始藍芽掃描" 
+              如果無法使用
+            </Text>
+            <Text style={styles.noPeripherals}>
+              請按 "開始藍芽掃描"
+            </Text>
+            <Text style={styles.noPeripherals}>
+              如果還是無法使用
+            </Text>
+            <Text style={styles.noPeripherals}>
+              請按 STM32 板子的 "B4" 重啟
             </Text>
           </View>
         )}
@@ -504,4 +497,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default BLEScan;
