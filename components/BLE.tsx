@@ -1,10 +1,8 @@
 /**
  * Sample BLE React Native App
  */
-import { NativeBaseProvider, Button, Box, Center} from "native-base";
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import React, {useState, useEffect} from 'react';
-import Swiper from 'react-native-swiper';
 import {
   SafeAreaView,
   StyleSheet,
@@ -19,18 +17,11 @@ import {
   TouchableHighlight,
   Pressable,
 } from 'react-native';
-import Password from './Password';
-import RemindMe from './RemindMe';
-import TextDemo from './TextDemo';
-import InputDemo from './InputDemo';
-import ReadMe from './ReadMe';
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import x from '../package.json';
 import { hexToRgbArray } from '../libs/'
 
-console.log(`🍔 Current app version: ${x.version}`);
-
-const SECONDS_TO_SCAN_FOR = 7;
+const SECONDS_TO_SCAN_FOR = 1;
 const SERVICE_UUIDS: string[] = [];
 const ALLOW_DUPLICATES = true;
 
@@ -124,7 +115,7 @@ const App = () => {
     if (!peripheral.name) {
       peripheral.name = 'NO NAME';
     }
-    if (peripheral.name === 'Peer to Peer Server') {
+    if (peripheral.name === 'Color LED Strip') {
       addOrUpdatePeripheral(peripheral.id, peripheral);
     }
   };
@@ -383,10 +374,10 @@ AsyncStorage.getItem('hexValue')
           <Text style={styles.peripheralName}>
             {/* completeLocalName (item.name) & shortAdvertisingName (advertising.localName) may not always be the same */}
             {item.name} - {item?.advertising?.localName}
-            {item.connecting && ' - Connecting...'}
+            {item.connecting && ' - 連線中...'}
           </Text>
           <Text style={styles.rssi}>RSSI: {item.rssi}</Text>
-          <Text style={styles.peripheralId}>{item.id}</Text>
+         
         </View>
       </TouchableHighlight>
     );
@@ -399,14 +390,14 @@ AsyncStorage.getItem('hexValue')
       <SafeAreaView style={styles.body}>
         <Pressable style={styles.scanButton} onPress={startScan}>
           <Text style={styles.scanButtonText}>
-            {isScanning ? 'Scanning...' : 'Scan Bluetooth'}
+            {isScanning ? '掃描中..(請等候).' : '開始藍芽掃描'}
           </Text>
         </Pressable>
 
         {Array.from(peripherals.values()).length === 0 && (
           <View style={styles.row}>
             <Text style={styles.noPeripherals}>
-              No Peripherals, press "Scan Bluetooth" above.
+              尚無連結, 請按 "開始藍芽掃描" 
             </Text>
           </View>
         )}

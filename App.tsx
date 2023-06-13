@@ -1,8 +1,7 @@
 /**
  * Sample BLE React Native App
  */
-import {NativeBaseProvider, Button, Box, Center} from 'native-base';
-import {Colors} from 'react-native/Libraries/NewAppScreen';
+import {NativeBaseProvider, Center} from 'native-base';
 import React, {useState, useEffect} from 'react';
 import Swiper from 'react-native-swiper';
 import {
@@ -122,7 +121,7 @@ const App = () => {
     if (!peripheral.name) {
       peripheral.name = 'NO NAME';
     }
-    if (peripheral.name === 'Peer to Peer Server') {
+    if (peripheral.name === 'Color LED Strip') {
       addOrUpdatePeripheral(peripheral.id, peripheral);
     }
   };
@@ -372,25 +371,6 @@ const App = () => {
     }
   };
 
-  const renderItem = ({item}: {item: Peripheral}) => {
-    const backgroundColor = item.connected ? '#069400' : Colors.white;
-    return (
-      <TouchableHighlight
-        underlayColor="#0082FC"
-        onPress={() => togglePeripheralConnection(item)}>
-        <View style={[styles.row, {backgroundColor}]}>
-          <Text style={styles.peripheralName}>
-            {/* completeLocalName (item.name) & shortAdvertisingName (advertising.localName) may not always be the same */}
-            {item.name} - {item?.advertising?.localName}
-            {item.connecting && ' - Connecting...'}
-          </Text>
-          <Text style={styles.rssi}>RSSI: {item.rssi}</Text>
-          <Text style={styles.peripheralId}>{item.id}</Text>
-        </View>
-      </TouchableHighlight>
-    );
-  };
-
   return (
     <>
       <NativeBaseProvider>
@@ -400,7 +380,6 @@ const App = () => {
           <Center flex={1} px="3" bg="yellow.400">
             <TextDemo />
           </Center>
-          <LogComponent/>
         </Swiper>
       </NativeBaseProvider>
       <StatusBar />
