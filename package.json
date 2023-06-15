@@ -5,7 +5,7 @@
   "scripts": {
     "list-devices": "xcrun xctrace list devices",
     "android": "react-native run-android",
-    "ios": "react-native run-ios --verbose --device \"iPod touch\" --verbose",
+    "ios": "react-native run-ios --verbose",
     "lint": "eslint .",
     "start": "RCT_LOG_LEVEL=verbose npx react-native start --reset-cache --watchFolders .",
     "test": "jest"

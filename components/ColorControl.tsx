@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import {Colors} from 'react-native/Libraries/NewAppScreen';
-import {Pressable, StyleSheet, View, Text, NativeModules, NativeEventEmitter, } from 'react-native';
+import {Pressable, StyleSheet, View, NativeModules, NativeEventEmitter, } from 'react-native';
 import Animated, { useAnimatedStyle, useSharedValue } from 'react-native-reanimated';
 import ColorPicker, { Panel1, Swatches, colorKit, PreviewText, HueCircular } from 'reanimated-color-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,6 +14,7 @@ import BleManager, {
 } from 'react-native-ble-manager';
 import { hexToRgbArray } from '../libs/';
 import debounce from 'lodash.debounce';
+import { Link, Text, Center, NativeBaseProvider, Box } from 'native-base';
 
 const BleManagerModule = NativeModules.BleManager;
 const bleManagerEmitter = new NativeEventEmitter(BleManagerModule);
@@ -208,6 +209,8 @@ let newValue=0;
 
   return (
     <>
+    <Text mx="16">蔡勻甄
+    </Text>
     <Animated.View style={[styles.container, backgroundColorStyle]}>
           <View style={styles.pickerContainer}>
             <ColorPicker value={selectedColor.value} sliderThickness={20} thumbSize={24} onChange={handleColorChange} boundedThumb>
