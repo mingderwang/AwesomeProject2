@@ -111,12 +111,6 @@ android {
         }
     }
     signingConfigs {
-        release {
-            storeFile file('mingderwang.keystore')
-            storePassword 'didipan8'
-            keyAlias 'your_key_alias'
-            keyPassword 'didipan8'
-        }
         debug {
             storeFile file('debug.keystore')
             storePassword 'android'
